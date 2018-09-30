@@ -15,31 +15,85 @@ namespace CommunityBot.Modules
     {
         private static readonly OverwritePermissions denyOverwrite = new OverwritePermissions(addReactions: PermValue.Deny, sendMessages: PermValue.Deny, attachFiles: PermValue.Deny);
 
-        [Command("purge", RunMode = RunMode.Async)]
-        [Remarks("Purges An Amount Of Messages")]
-        [RequireUserPermission(GuildPermission.ManageMessages)]
-        public async Task Clear(int amountOfMessagesToDelete)
-        {
-            await (Context.Message.Channel as SocketTextChannel).DeleteMessagesAsync(await Context.Message.Channel.GetMessagesAsync(amountOfMessagesToDelete+1).FlattenAsync());
-        }
+		[Command("purge", RunMode = RunMode.Async)]
+		[Remarks("Purges An Amount Of Messages")]
+		[RequireUserPermission(GuildPermission.ManageMessages)]
+		public async Task Clear(int amountOfMessagesToDelete)
+		{
+			if (amountOfMessagesToDelete < 1)
+			{
+				await ReplyAsync($":warning: Are you seriously trying to remove **{amountOfMessagesToDelete}**? :scream:");
+				return;
+			}
+			var messages = await Context.Message.Channel.GetMessagesAsync(amountOfMessagesToDelete + 1).FlattenAsync(); //amount of  messages
+			var overmessages = messages.Where(x => (DateTime.Now - x.Timestamp).TotalDays > 13).ToList(); //messages older than 13 days
+			messages = messages.Except(overmessages).ToList();
 
-        [Command("purge")]
-        [Remarks("Purges A User's Last Messages. Default Amount To Purge Is 100")]
-        [RequireUserPermission(GuildPermission.ManageMessages)]
-        public async Task Clear(SocketGuildUser user, int amountOfMessagesToDelete = 100)
-        {
-            if (user == Context.User)
-                amountOfMessagesToDelete++; //Because it will count the purge command as a message
+			await (Context.Message.Channel as SocketTextChannel).DeleteMessagesAsync(messages); //removing messages younger than 13 days
+			foreach (var o in overmessages) //removing messages older than 13 days
+			{
+				await (Context.Message.Channel as SocketTextChannel).DeleteMessageAsync(o);
+			}
+			if (amountOfMessagesToDelete > 1) await ReplyAsync($":information_source: Last {amountOfMessagesToDelete} messages were deleted.");
+			else await ReplyAsync($":information_source: Last {amountOfMessagesToDelete} message was deleted.");
+		}
 
-            var messages = await Context.Message.Channel.GetMessagesAsync(amountOfMessagesToDelete).FlattenAsync();
+	    [Command("purge", RunMode = RunMode.Async)]
+	    [Remarks("Purges An Amount Of Messages")]
+	    [RequireUserPermission(GuildPermission.ManageMessages)]
+	    public async Task Clear(SocketGuildUser user)
+	    {
+		    var textchannels = Context.Guild.TextChannels.Where(x => x.Users.Contains(user)); //get all text channels where user have permissions
 
-            var result = messages.Where(x => x.Author.Id == user.Id && x.CreatedAt >= DateTimeOffset.UtcNow.Subtract(TimeSpan.FromDays(14)));
-            
-            await (Context.Message.Channel as SocketTextChannel).DeleteMessagesAsync(result);
+			foreach (var channel in textchannels)
+		    {
+			    var messages = await channel.GetMessagesAsync().FlattenAsync();
+			    var finalmessages =  messages.Where(x => x.Author == (SocketUser)user && x.IsPinned == false).ToList(); //messages for deleting younger than 13 days 
+			    var overmessages = finalmessages.Where(x => (DateTime.Now - x.Timestamp).TotalDays > 13).ToList(); //messages for deleting older than 13 days - due discord 
+			    finalmessages =  finalmessages.Except(overmessages).ToList(); 
 
-        }
+			    await channel.DeleteMessagesAsync(finalmessages); //removing messages old max. 13 days
+			    foreach (var o in overmessages) //removing other messages
+			    {
+					await channel.DeleteMessageAsync(o);
+				}
+			}
 
-        [Command("kick")]
+		    await ReplyAsync($":information_source: All messages from {user.Username} were deleted.");
+		}
+
+	    [Command("purge", RunMode = RunMode.Async)]
+	    [Remarks("Purges An Amount Of Messages")]
+	    [RequireUserPermission(GuildPermission.ManageMessages)]
+	    public async Task Clear(SocketGuildUser user, int amountOfMessagesToDelete)
+	    {
+		    if (amountOfMessagesToDelete < 1)
+		    {
+			    await ReplyAsync($":warning: Are you seriously trying to remove **{amountOfMessagesToDelete}**? :scream:");
+			    return;
+			}
+		    var messages = await Context.Channel.GetMessagesAsync().FlattenAsync();
+			var finalmessages = messages.Where(x => x.Author == (SocketUser)user && x.IsPinned == false).Take(amountOfMessagesToDelete + 1).ToList(); //amount of messages younger than 13 days 
+		    if (finalmessages.Count() == 0)
+		    {
+			    await ReplyAsync($":warning: I did not find any messages from {user.Nickname}.");
+				return;
+			}
+
+		    var overmessages = finalmessages.Where(x => (DateTime.Now - x.Timestamp).TotalDays > 13).ToList(); //messages older than 13 days
+		    finalmessages = finalmessages.Except(overmessages).ToList();
+			await (Context.Message.Channel as SocketTextChannel).DeleteMessagesAsync(finalmessages); //deleting messages younger than 13 days
+
+		    foreach (var o in overmessages) //deleting messages older than 13 days
+		    {
+			    await (Context.Message.Channel as SocketTextChannel).DeleteMessageAsync(o);
+		    }
+
+			if(amountOfMessagesToDelete > 1) await ReplyAsync($":information_source: {amountOfMessagesToDelete} messages from {user.Username} were deleted in this channel.");
+			else await ReplyAsync($":information_source: {amountOfMessagesToDelete} message from {user.Username} were deleted in this channel.");
+		}
+
+		[Command("kick")]
         [Remarks("Kick A User")]
         [RequireUserPermission(GuildPermission.KickMembers)]
         public async Task Kick([NoSelf][RequireBotHigherHirachy] SocketGuildUser user)
