@@ -34,8 +34,12 @@ namespace CommunityBot.Modules
 			{
 				await (Context.Message.Channel as SocketTextChannel).DeleteMessageAsync(o);
 			}
-			if (amountOfMessagesToDelete > 1) await ReplyAsync($":information_source: Last {amountOfMessagesToDelete} messages were deleted.");
-			else await ReplyAsync($":information_source: Last {amountOfMessagesToDelete} message was deleted.");
+
+			var message = (amountOfMessagesToDelete > 1)
+				? $":information_source: Last {amountOfMessagesToDelete} messages were deleted."
+				: $":information_source: Last {amountOfMessagesToDelete} message was deleted.";
+
+			await ReplyAsync(message);
 		}
 
 	    [Command("purge", RunMode = RunMode.Async)]
@@ -89,8 +93,11 @@ namespace CommunityBot.Modules
 			    await (Context.Message.Channel as SocketTextChannel).DeleteMessageAsync(o);
 		    }
 
-			if(amountOfMessagesToDelete > 1) await ReplyAsync($":information_source: {amountOfMessagesToDelete} messages from {user.Username} were deleted in this channel.");
-			else await ReplyAsync($":information_source: {amountOfMessagesToDelete} message from {user.Username} were deleted in this channel.");
+		    var message = (amountOfMessagesToDelete > 1)
+			    ? $":information_source: {amountOfMessagesToDelete} messages from {user.Username} were deleted in this channel."
+			    : $":information_source: {amountOfMessagesToDelete} message from {user.Username} were deleted in this channel.";
+
+		    await ReplyAsync(message);
 		}
 
 		[Command("kick")]
