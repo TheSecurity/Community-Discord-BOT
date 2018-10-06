@@ -1,8 +1,10 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
+using CommunityBot.Extensions;
 using CommunityBot.Features.GlobalAccounts;
 using CommunityBot.Helpers;
+using CommunityBot.Entities;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
@@ -10,7 +12,7 @@ using Discord.WebSocket;
 namespace CommunityBot.Modules.Account
 {
     [Group("account")]
-    public class MangeUserAccount : ModuleBase<SocketCommandContext>
+    public class ManageUserAccount : ModuleBase<MiunieCommandContext>
     {
         [Command("info")]
         public async Task AccountInformation(SocketGuildUser user = null)
@@ -36,6 +38,19 @@ namespace CommunityBot.Modules.Account
             await Context.Channel.SendMessageAsync(Context.User.Mention, false, embed);
         }
 
+        [Command("ShowCommandHistory"), Alias("CommandHistory")]
+        public async Task ShowCommandHistory()
+        {            
+            await Context.Channel.SendMessageAsync(GetCommandHistory(Context.UserAccount));
+        }
+        
+        //Could be in the extended ModuleBase, with a few changes
+        private string GetCommandHistory(GlobalUserAccount userAccount)
+        {
+            var commandHistory = userAccount.CommandHistory.Select(cH => $"{cH.UsageDate.ToString("G")} {cH.Command}");
+            return String.Join("\n", commandHistory); //Return the command history separated by line
+        }
+        
         [Command("GetAllMyAccountData"), Alias("GetMyData", "MyData")]
         public async Task GetAccountFile()
         {
@@ -64,6 +79,7 @@ namespace CommunityBot.Modules.Account
             }
         }
 
+        
         private async Task EvaluateResponse(SocketMessage response, string optionYes)
         {
             var message = "";

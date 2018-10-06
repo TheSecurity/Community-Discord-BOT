@@ -6,12 +6,13 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.IO;
+using CommunityBot.Extensions;
 using CommunityBot.Handlers;
 using CommunityBot.Preconditions;
 
 namespace CommunityBot.Modules
 {
-    public class Admin : ModuleBase<SocketCommandContext>
+    public class Admin : ModuleBase<MiunieCommandContext>
     {
         private static readonly OverwritePermissions denyOverwrite = new OverwritePermissions(addReactions: PermValue.Deny, sendMessages: PermValue.Deny, attachFiles: PermValue.Deny);
 

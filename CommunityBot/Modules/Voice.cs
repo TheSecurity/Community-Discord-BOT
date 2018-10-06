@@ -1,11 +1,12 @@
 ﻿using Discord;
 using Discord.Commands;
 using System.Threading.Tasks;
+using CommunityBot.Extensions;
 using CommunityBot.Preconditions;
 
 namespace CommunityBot.Modules
 {
-    public class Voice : ModuleBase<SocketCommandContext>
+    public class Voice : ModuleBase<MiunieCommandContext>
     {
         const int maxTimeInMinutes = 3600000;
 

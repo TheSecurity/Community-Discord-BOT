@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using CommunityBot.Extensions;
 using CommunityBot.Features.GlobalAccounts;
 using CommunityBot.Providers;
 using Discord;
@@ -10,7 +11,7 @@ namespace CommunityBot.Modules.RoleAssignments
 {
     [Group("RoleByPhrase"), Alias("rbp"), Summary("Settings for auto-assigning roles based on a sent Phrase")]
     [RequireUserPermission(GuildPermission.Administrator)]
-    public class RoleByPhrase : ModuleBase<SocketCommandContext>
+    public class RoleByPhrase : ModuleBase<MiunieCommandContext>
     {
         [Command("status"), Alias("s"), RequireUserPermission(GuildPermission.Administrator)]
         [Remarks("Returns the current state of RoleByPhrase lists and relations.")]

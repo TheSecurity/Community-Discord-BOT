@@ -1,11 +1,12 @@
 ﻿using System.Threading.Tasks;
+using CommunityBot.Extensions;
 using CommunityBot.Features.GlobalAccounts;
 using Discord;
 using Discord.Commands;
 
 namespace CommunityBot.Modules
 {
-    public class ServerSetup : ModuleBase<SocketCommandContext>
+    public class ServerSetup : ModuleBase<MiunieCommandContext>
 
     {
 

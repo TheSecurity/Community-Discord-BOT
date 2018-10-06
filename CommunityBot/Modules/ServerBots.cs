@@ -4,13 +4,14 @@ using Discord;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using CommunityBot.Extensions;
 using CommunityBot.Features.GlobalAccounts;
 
 namespace CommunityBot.Modules
 {
     [Group("Bots")]
     [Summary("Allows access to pending and archived invite links to bots. This allows for you to submit your invite links for bots so that the guild's managers can add them.")]
-    public class ServerBots : ModuleBase<SocketCommandContext>
+    public class ServerBots : ModuleBase<MiunieCommandContext>
     {
         [Serializable]
         public class AllGuildsData

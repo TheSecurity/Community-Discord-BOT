@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using CommunityBot.Extensions;
 using CommunityBot.Features.GlobalAccounts;
 using Discord;
 using Discord.Commands;
@@ -8,7 +9,7 @@ namespace CommunityBot.Modules
 {
     [Group("Announcements"), Alias("Announcement"), Summary("Settings for announcements")]
     [RequireUserPermission(GuildPermission.Administrator)]
-    public class Announcement : ModuleBase<SocketCommandContext>
+    public class Announcement : ModuleBase<MiunieCommandContext>
     {
         [Command("SetChannel"), Alias("Set"), RequireUserPermission(GuildPermission.Administrator)]
         [Remarks("Sets the channel where to post announcements")]
@@ -30,7 +31,7 @@ namespace CommunityBot.Modules
     }
     [Group("Welcome")]
     [Summary("DM a joining user a random message out of the ones defined.")]
-    public class WelcomeMessages : ModuleBase<SocketCommandContext>
+    public class WelcomeMessages : ModuleBase<MiunieCommandContext>
     {
         [Command("add"), RequireUserPermission(GuildPermission.Administrator)]
         [Remarks("Example: `welcome add <usermention>, welcome to **<guildname>**! " +
@@ -89,7 +90,7 @@ namespace CommunityBot.Modules
     [Summary("Announce a leaving user in the set announcement channel" +
              "with a random message out of the ones defined.")
     ]
-    public class LeaveMessages : ModuleBase<SocketCommandContext>
+    public class LeaveMessages : ModuleBase<MiunieCommandContext>
     {
         [Command("add"), RequireUserPermission(GuildPermission.Administrator)]
         [Remarks("Example: `leave add Oh noo! <usermention>, left <guildname>...`\n" +

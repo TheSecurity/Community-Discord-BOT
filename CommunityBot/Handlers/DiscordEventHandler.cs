@@ -1,7 +1,9 @@
-using System;
+﻿using System;
+using System.Text;
 using System.Threading.Tasks;
 using CommunityBot.Configuration;
 using CommunityBot.Features;
+using CommunityBot.Features.Lists;
 using CommunityBot.Features.Trivia;
 using CommunityBot.Helpers;
 using CommunityBot.Modules;
@@ -185,7 +187,10 @@ namespace CommunityBot.Handlers
 
         private async Task ReactionAdded(Cacheable<IUserMessage, ulong> cacheMessage, ISocketMessageChannel channel, SocketReaction reaction)
         {
-            if (reaction.User.Value.IsBot) return;
+            if (reaction.User.Value.IsBot) { return; }
+
+            ListManager.HandleReactionAdded(cacheMessage, reaction);
+
             _triviaGames.HandleReactionAdded(cacheMessage, reaction);
             BlogHandler.ReactionAdded(reaction);
         }

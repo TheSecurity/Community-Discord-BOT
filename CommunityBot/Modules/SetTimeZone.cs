@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using CommunityBot.Extensions;
 using CommunityBot.Features.GlobalAccounts;
 using Discord.Commands;
 using Newtonsoft.Json;
@@ -6,7 +7,7 @@ using Ofl.Google.Maps.TimeZone;
 
 namespace CommunityBot.Modules
 {
-   public class SetTimeZone : ModuleBase<SocketCommandContext>
+   public class SetTimeZone : ModuleBase<MiunieCommandContext>
     {
         [Command("MyCity")]
         public async Task SetMyCity([Remainder] string city)

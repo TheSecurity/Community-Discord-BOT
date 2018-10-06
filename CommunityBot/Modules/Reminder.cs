@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Threading.Tasks;
 using CommunityBot.Entities;
+using CommunityBot.Extensions;
 using CommunityBot.Features.GlobalAccounts;
 using Discord;
 using Discord.Commands;
@@ -42,7 +43,7 @@ namespace CommunityBot.Modules
     /// </summary>
     [Group("Reminder"), Alias("Remind", "r")]
     [Summary("Tell the bot to remind you in some amount of time. The bot will send you a DM with the text you specified.")]
-    public class Reminder : ModuleBase<SocketCommandContext>
+    public class Reminder : ModuleBase<MiunieCommandContext>
     {
         [Command(""), Alias("New", "Add"), Priority(0), Remarks("Add a reminder")]
         public async Task AddReminder([Remainder] string args)

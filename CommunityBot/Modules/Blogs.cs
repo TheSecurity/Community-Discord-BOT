@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CommunityBot.Configuration;
+using CommunityBot.Extensions;
 using CommunityBot.Features.Blogs;
 using CommunityBot.Handlers;
 using Discord;
@@ -12,7 +13,7 @@ using Newtonsoft.Json;
 namespace CommunityBot.Modules
 {
     [Group("Blog"), Summary("Enables you to create a block that people can subscribe to so they don't miss out if you publish a new one")]
-    public class Blogs : ModuleBase<SocketCommandContext>
+    public class Blogs : ModuleBase<MiunieCommandContext>
     {
         private static readonly string blogFile = "blogs.json";
         [Command("Create"), Remarks("Create a new named block")]

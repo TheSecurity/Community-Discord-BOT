@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using CommunityBot.Features.GlobalAccounts;
 using Discord;
 using CommunityBot.Entities;
+using CommunityBot.Extensions;
 
 namespace CommunityBot.Modules
 {
@@ -10,7 +11,7 @@ namespace CommunityBot.Modules
     [Summary("Permanently assing a message to a keyword (for this server) which " +
              "the bot will repeat if someone uses this command with that keyword.")]
     [RequireContext(ContextType.Guild)]
-    public class ServerTags : ModuleBase<SocketCommandContext>
+    public class ServerTags : ModuleBase<MiunieCommandContext>
     {
         [Command(""), Priority(-1), Remarks("Let the bot send a message with the content of the named tag on the server")]
         public async Task ShowTag(string tagName)
@@ -63,7 +64,7 @@ namespace CommunityBot.Modules
     [Summary("Permanently assing a message to a keyword (global for you) which " +
              "the bot will repeat if you use this command with that keyword.")]
     [RequireContext(ContextType.Guild)]
-    public class PersonalTags : ModuleBase<SocketCommandContext>
+    public class PersonalTags : ModuleBase<MiunieCommandContext>
     {
         [Command(""), Priority(-1), Remarks("Lets the bot send a message with the content of your named tag")]
         public async Task ShowTag(string tagName = "")

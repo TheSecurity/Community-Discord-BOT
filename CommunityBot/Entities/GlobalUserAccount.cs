@@ -25,10 +25,7 @@ namespace CommunityBot.Entities
 
         private List<CommandInformation> _commandHistory { get; } = new List<CommandInformation>();
 
-        public ReadOnlyCollection<CommandInformation> GetCommandHistory()
-        {
-            return _commandHistory.AsReadOnly();
-        }
+        public ReadOnlyCollection<CommandInformation> CommandHistory { get; private set; }
 
         public void AddCommandToHistory(CommandInformation commandInformation)
         {
@@ -37,6 +34,8 @@ namespace CommunityBot.Entities
             {
                 _commandHistory.RemoveAt(0); //remove the first element, ensures the list always got 5 elements maximum
             }
+            
+            CommandHistory = new ReadOnlyCollection<CommandInformation>(_commandHistory);
         }
         
         public string TimeZone { get; set; } // Please note, TimeZone ID works for LINUX, but for windows we need TimeZone NAME

@@ -3,89 +3,114 @@ using System.Collections.Generic;
 using System.Text;
 using CommunityBot.Configuration;
 using System.IO;
+using Discord.WebSocket;
 
 namespace CommunityBot.Features.Lists
 {
     public class CustomList
     {
-        public String name { get; set; }
-        public List<String> contents { get; set; }
-
-        public CustomList(String name)
+        public enum ListPermission
         {
-            this.name = name;
-            contents = new List<string>();
+            PRIVATE,
+            PUBLIC,
+            READ,
+            LIST
+        };
+
+        public static IReadOnlyList<String> permissionStrings = new List<String>
+        {
+            "private",
+            "public",
+            "read only",
+            "view only"
+        };
+
+        public static readonly IReadOnlyDictionary<string, ListPermission> validPermissions = new Dictionary<string, ListPermission>
+        {
+            { "-p", ListPermission.PRIVATE },
+            { "-pu", ListPermission.PUBLIC },
+            { "-r", ListPermission.READ },
+            { "-l", ListPermission.LIST }
+        };
+
+        public string Name { get; set; }
+        public List<String> Contents { get; set; }
+        public ulong OwnerId { get; set; }
+        public ListPermission Permission { get; set; }
+
+        public CustomList(ulong ownerId, ListPermission permission, String name)
+        {
+            this.OwnerId = ownerId;
+            this.Permission = permission;
+            this.Name = name;
+            Contents = new List<string>();
         }
 
         public void Add(String item)
         {
-            contents.Add(item);
-            WriteContents();
+            Contents.Add(item);
+            SaveList();
         }
 
         public void AddRange(String[] collection)
         {
-            contents.AddRange(collection);
-            WriteContents();
+            Contents.AddRange(collection);
+            SaveList();
         }
 
         public void Insert(int index, String item)
         {
-            contents.Insert(index, item);
-            WriteContents();
+            Contents.Insert(index, item);
+            SaveList();
         }
 
         public void InsertRange(int index, String[] collection)
         {
-            contents.InsertRange(index, collection);
-            WriteContents();
+            Contents.InsertRange(index, collection);
+            SaveList();
         }
 
         public void Remove(String item)
         {
-            contents.Remove(item);
-            WriteContents();
+            Contents.Remove(item);
+            SaveList();
         }
 
         public void Clear()
         {
-            contents.Clear();
-            WriteContents();
+            Contents.Clear();
+            SaveList();
         }
 
         public int Count()
         {
-            return contents.Count;
+            return Contents.Count;
         }
 
         public void Delete()
         {
-            String resourceFolder = Constants.ResourceFolder;
-            String path = String.Concat(resourceFolder, "/", this.name, ".json");
+            string resourceFolder = Constants.ResourceFolder;
+            var path = String.Concat(resourceFolder, "/", this.Name, ".json");
             if (!File.Exists(path)) { return; }
             File.Delete(path);
         }
 
-        public void WriteContents()
+        public void SaveList()
         {
-            DataStorage.StoreObject(contents, this.name + ".json", false);
+            DataStorage.StoreObject(this, $"{this.Name}.json", false);
         }
-
-        public List<String> ReadContents()
+        
+        public static CustomList RestoreList(string name)
         {
-            var list = DataStorage.RestoreObject<List<String>>(this.name + ".json");
-            if (list == null) { return null; }
-
-            this.contents = list;
-            return this.contents;
+            return DataStorage.RestoreObject<CustomList>($"{name}.json");
         }
 
         public bool EqualContents(List<String> list)
         {
-            if (this.contents.Count != list.Count) { return false; }
-            for (int i=0; i<this.contents.Count; i++)
+            if (this.Contents.Count != list.Count) { return false; }
+            for (int i=0; i<this.Contents.Count; i++)
             {
-                if (!this.contents[i].Equals(list[i])) { return false; }
+                if (!this.Contents[i].Equals(list[i])) { return false; }
             }
             return true;
         }
@@ -94,7 +119,25 @@ namespace CommunityBot.Features.Lists
         {
             if (!(obj is CustomList)) { return false; }
             CustomList comp = (CustomList)obj;
-            return (EqualContents(comp.contents) && comp.name.Equals(this.name));
+            return (EqualContents(comp.Contents) && comp.Name.Equals(this.Name));
+        }
+
+        public bool IsAllowedToList(ulong userId)
+        {
+            return ( !(this.OwnerId != userId && this.Permission == ListPermission.PRIVATE) );
+        }
+
+        public bool IsAllowedToRead(ulong userId)
+        {
+            return (    this.OwnerId == userId
+                    ||  this.Permission == ListPermission.PUBLIC
+                    ||  this.Permission == ListPermission.READ );
+        }
+
+        public bool IsAllowedToWrite(ulong userId)
+        {
+            return (    this.OwnerId == userId
+                    ||  this.Permission == ListPermission.PUBLIC );
         }
     }
 }

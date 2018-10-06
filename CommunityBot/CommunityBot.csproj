@@ -14,15 +14,14 @@
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Remove="ServerActivityLogger\ServerActivityLogger.cs" />
+    <Compile Remove="ServerActivityLogger\**" />
+    <EmbeddedResource Remove="ServerActivityLogger\**" />
+    <None Remove="ServerActivityLogger\**" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Discord.Net" Version="2.0.0-beta2-00970" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
     <PackageReference Include="Ofl.Google.Maps" Version="3.0.22" />
     <PackageReference Include="Lamar" Version="*" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="ServerActivityLogger\" />
   </ItemGroup>
 </Project>

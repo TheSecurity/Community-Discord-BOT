@@ -12,9 +12,13 @@ namespace CommunityBot.Extensions
         public MiunieCommandContext(DiscordSocketClient client, SocketUserMessage msg) : base(client, msg)
         {
             if (User is null) { return; }
+
             UserAccount = GlobalUserAccounts.GetUserAccount(User);
-            
-            var commandUsedInformation = new CommandInformation(msg.Content, msg.CreatedAt.DateTime);
+        }
+
+        public void RegisterCommandUsage()
+        {
+            var commandUsedInformation = new CommandInformation(Message.Content, Message.CreatedAt.DateTime);
             
             UserAccount.AddCommandToHistory(commandUsedInformation);
 

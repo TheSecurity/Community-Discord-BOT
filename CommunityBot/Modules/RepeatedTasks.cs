@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using CommunityBot.Extensions;
 using Discord;
 using Discord.Commands;
 
@@ -7,7 +8,7 @@ namespace CommunityBot.Modules
 {
     [Group("Tasks"), Remarks("Settings for the repeated task that run in the background")] 
     [Alias("Task", "T")]
-    public class RepeatedTasks : ModuleBase<SocketCommandContext>
+    public class RepeatedTasks : ModuleBase<MiunieCommandContext>
     {
         [Command("")]
         [Alias("List", "L")]

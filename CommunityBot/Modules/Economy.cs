@@ -4,13 +4,14 @@ using Discord;
 using Discord.Commands;
 using System.Linq;
 using System.Threading.Tasks;
+using CommunityBot.Extensions;
 using static CommunityBot.Global;
 using static CommunityBot.Features.Economy.Transfer;
 // ReSharper disable ConvertIfStatementToSwitchStatement
 
 namespace CommunityBot.Modules
 {
-    public class Economy : ModuleBase<SocketCommandContext>
+    public class Economy : ModuleBase<MiunieCommandContext>
     {
         [Command("Daily"), Remarks("Gives you some Miunies but can only be used once a day")]
         [Alias("GetDaily", "ClaimDaily")]

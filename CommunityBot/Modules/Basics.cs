@@ -1,11 +1,12 @@
 ﻿using CommunityBot.Preconditions;
 using Discord.Commands;
 using System.Threading.Tasks;
+using CommunityBot.Extensions;
 using Discord;
 
 namespace CommunityBot.Modules
 {
-    public class Basics : ModuleBase<SocketCommandContext>
+    public class Basics : ModuleBase<MiunieCommandContext>
     {
         [Command("Hello")]
         [Cooldown(5)]

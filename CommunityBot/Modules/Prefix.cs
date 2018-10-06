@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using CommunityBot.Extensions;
 using CommunityBot.Features.GlobalAccounts;
 using Discord;
 using Discord.Commands;
@@ -8,7 +9,7 @@ namespace CommunityBot.Modules
 {
     [Group("Prefix"), Alias("Prefixes"), Summary("Setting for the Bots prefix on this server")]
     [RequireContext(ContextType.Guild)]
-    public class Prefix : ModuleBase<SocketCommandContext>
+    public class Prefix : ModuleBase<MiunieCommandContext>
     {
         [Command("add"), Alias("set"), RequireUserPermission(GuildPermission.Administrator)]
         [Remarks("Adds a prefix to the list of prefixes")]
